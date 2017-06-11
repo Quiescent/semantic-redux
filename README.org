@@ -1,0 +1,55 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: README
+#+DATE: <2017-06-11 Sun>
+#+AUTHOR: Edward John Steere
+#+EMAIL: edward.steere@gmail.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.0.50 (Org mode 9.0.8)
+
+* Introduction
+This is "Semantic Redux" a project which aims to provide a more
+modular and faster version of the "CEDET" project in Emacs.
+
+* Goals
+** Reorganisation
+*** TODO Get Parsing to work in All Supported Modes
+Complete when it can parse the current buffer for all supported modes
+*** TODO Get DB for Current File to Work
+Complete when I can load the parse data for the current buffer from a
+DB file.
+** Design Interface
+*** Redesign Databases as Either Context or Current File
+Current File DB is intended to accelerate parsing the current file.
+Context databases are for getting information which isn't present in
+the current buffer.
+
+Context DBs will be completely mode/language dependent and may depend
+on things like language servers.  i.e. I don't want to replicate the
+functionality where you can get info from other files which have been
+parsed.
+
+Goal is to make context databases a flexible search mechanism designed
+for performance.  To this end they'll export a publish interface which
+creates a flexible index.  Functions which require context can read
+from the index.  The operation of these DBs will be eventually
+consistent, in that repeated queries might yield different results
+depending on the state of whatever is doing the publishing, whereas
+the current buffer DB will be consistent all the time.
+
+**** TODO Reverse Engineer the Current DB
+
+**** TODO Design the local File DB
+
+**** TODO Design Context DB Publish/Read Interface
+
+**** TODO Strip Out Features in SemanticDB which References Other Files Local DBs
+
+**** TODO Create Jump/Complete System
+
+**** TODO Create Symref System
