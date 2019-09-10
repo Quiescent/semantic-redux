@@ -16,6 +16,51 @@
 This is "Semantic Redux" a project which aims to provide a more
 modular and faster version of the "CEDET" project in Emacs.
 
+To my mind CEDET didn't adequately provide for the case that data
+about the meaning of the parse tree cannot be established based on the
+current buffer alone.  e.g. a symbol in a buffer might refer to
+something which a system-wide installed binary knows about.  In such
+cases we must rely on a program which has project/system-wide
+knowledge.
+
+CEDET implemented semantic databases to address this issue.  These
+databases allowed one to have information from other files in the
+project available in the current buffer.  Semantic databases suffered
+from the problem that it's difficult and very slow to parse the source
+code of an entire project and one is often left with an incomplete or
+out of date database.  What's more, as mentioned previously, one
+cannot establish the correctness of a program which depends on
+libraries through it's in-tree sources alone.
+
+Recently there has been a resurgence of server-based programs for
+supporting software development.  (I say resurgence because Emacs has
+been doing this for a very long time with the likes of the Slime
+project.)  These programs rely on the Microsoft Language Server
+Protocol (LSP) to retrieve information about the current buffer from a
+server which continuously builds and parses the source code of your
+project.
+
+There are a couple of problems which I've encountered with the LSP:
+1. LSP being generic, it doesn't cater for Emacs features
+   (syntax-based navigation etc.) very well;
+2. LSP is very inefficient.  There were some complaints about the
+   speed of JSON parsing in the mailing list a few months ago (writing
+   this paragraph on the 10th of September 2019).  It turned out that
+   the payload being sent from the LSP server was in excess of a few
+   megabytes when the user pressed a single key in their editor!
+3. LSP is asynchronous.  It is not designed to be able to keep up with
+   the programmer and instead provides completions etc. as soon as it
+   can (which often leads to bad UX).
+
+I think that the optimal space to live in is one in which we have the
+best of both worlds.  In-memory, synchronous, buffer based, parsing
+for navigation commands and immediate feedback on the correctness of
+syntax *and* access to a server process which can provide context for
+global information on the project sources and libraries.
+
+It is my hope that this can be achieved by restructuring the existing
+CEDET sources and integrating a number of technologies.
+
 * Goals
 ** Reorganisation
 *** TODO Get Parsing to work in All Supported Modes
